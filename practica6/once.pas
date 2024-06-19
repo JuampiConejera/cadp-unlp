@@ -1,4 +1,6 @@
 program once;
+const
+    dimF = 10;
 type
     alumno = record
         legajo : integer;
@@ -10,7 +12,7 @@ type
         dato : alumno;
         sig : listaAlumnos;
     end;
-    mejoresEgresados = array[1..10] of alumno;
+    vecMejoresEgresados = array[1..dimF] of alumno;
 procedure leerAlumno(var a : alumno);
 begin
     write('Numero de Legajo: ');readln(a.legajo);
@@ -19,31 +21,63 @@ begin
         write('Promedio: ');readln(a.promedio);
     end;
 end;
-procedure agregarAdelante(var l : listaAlumnos;a : alumno);
+procedure insertarOrdenado(var l : listaAlumnos;a : alumno);
 var
-    aux : listaAlumnos;
+    actual, anterior, nuevo : listaAlumnos;
 begin
-    new(aux);
-    aux^.dato := a;
-    aux^.sig := l;
-    l := aux;
+    new(nuevo);
+    nuevo^.dato := a;
+    nuevo^.sig := Nil;
+    actual := l;
+    anterior := l;
+    while(actual <> nil) and (actual^.dato.promedio > a.promedio) do begin
+        anterior := actual;
+        actual := actual^.sig;
+    end;
+    if(actual = anterior) then
+        l := nuevo
+    else
+        anterior^.sig := nuevo;
+    nuevo^.sig := actual;
 end;
 procedure cargarAlumnos(var l : listaAlumnos);
 var
-    a : alumno;
+    a : alumno; 
+    i : integer;
 begin
+    i := 0;
     leerAlumno(a);
     while(a.legajo <> 0) do begin
-        agregarAdelante(l,a);
+        insertarOrdenado(l,a);
+        i := i + 1;
         leerAlumno(a);
     end;
+end;
+procedure cargarVector(var v : vecMejoresEgresados; l : listaAlumnos);
+var
+    i : integer;
+begin
+    for i := 1 to dimF do begin
+        v[i] := l^.dato;
+        l := l^.sig;
+    end;
+end;
+procedure imprimirVector(v : vecMejoresEgresados);
+var
+    i : integer;
+begin
+    for i := 1 to dimF do
+        WriteLn('El alumno ', v[i].apellido, '. Numero de legajo: ', v[i].legajo, ' está en el puesto ', i, ' con un promedio de: ', v[i].promedio:0:2,'.');
 end;
 var
     a : alumno;
     l : listaAlumnos;
+    v : vecMejoresEgresados;
 begin
     l := nil;
     cargarAlumnos(l);
+    cargarVector(v,l);
+    imprimirVector(v);
 end.
 {11. La Facultad de Informática debe seleccionar los 10 egresados con mejor promedio a los que la UNLP les
 entregará el premio Joaquín V. González. De cada egresado se conoce su número de alumno, apellido y

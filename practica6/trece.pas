@@ -23,26 +23,18 @@ var
     actual, anterior, nuevo : lista;
 begin
     new(nuevo);
-    nuevo^.dato := v[i];
-    nuevo^.sig := Nil;
-    if(l = Nil) then 
+    nuevo^.dato := v;
+    actual := l;
+    anterior := l;
+    while(actual <> nil) and (actual^.dato.ultimoAcceso < v.ultimoAcceso) do begin
+        anterior := actual;
+        actual := actual^.sig;
+    end;
+    if(actual = anterior) then
         l := nuevo
-    else begin
-        actual := l;
-        anterior := l;
-        while(actual <> Nil) and (actual^.dato.ultimoAcceso < nuevo^.dato.ultimoAcceso) do begin
-            anterior := actual;
-            actual := actual^.sig;
-        end;
-    end;
-    if(actual = l) then begin
-        nuevo^.sig := l;
-        l := nuevo;
-    end
-    else begin
+    else
         anterior^.sig := nuevo;
-        nuevo^.sig := actual;
-    end;
+    nuevo^.sig := actual;
 end;
 procedure imprimirLista(l : lista);
 begin
@@ -74,15 +66,16 @@ begin
             insertarOrdenado(l,v[i]);
         end;
         vr[v[i].rol] := vr[v[i].rol] + 1;
+        if(v[i].ultimoAcceso > maxDos) then begin
+            maxDos := v[i].ultimoAcceso;
+            emailDos := v[i].email;
+        end;
         if(v[i].ultimoAcceso > maxUno) then begin
             maxDos := maxUno;
             emailDos := emailUno;
             maxUno := v[i].ultimoAcceso;
             emailUno := v[i].email;
-        end
-        else if(v[i].ultimoAcceso > maxDos) then begin
-            maxDos := v[i].ultimoAcceso;
-            emailDos := v[i].email;
+        end;
         end;
     end;
     for j := 1 to 4 do //punto B.
@@ -96,6 +89,18 @@ var
 begin
     l := nil;
     //cargarVector(v);
+    //cargar vectores para ver los resultados
+    v[1].nombreUsuario := 'hola';
+    v[1].email := '@gmail';
+    v[1].rol := 1;
+    v[1].revista := 'economica';
+    v[1].ultimoAcceso := 100;
+
+    v[2].nombreUsuario := 'chau';
+    v[2].email := '@hotmail';
+    v[2].rol := 4;
+    v[2].revista := 'economica';
+    v[2].ultimoAcceso := 200;
     procesarVector(l,v);
     imprimirLista(l); //punto A.
 end.
