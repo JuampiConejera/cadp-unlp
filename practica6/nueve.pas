@@ -1,30 +1,22 @@
-program uno;
+program nueve;
 type
     lista = ^nodo;
     nodo = record
         num : integer;
         sig : lista;
     end;
-procedure armarNodo(var L: lista; v: integer);
+procedure armarNodo(var L,ult: lista; v: integer);
 var
-    aux : lista;
+    aux: lista;
 begin
     new(aux);
     aux^.num := v;
-    aux^.sig := L;
-    L := aux;
-end;
-procedure aumentarLista(l: lista);
-var
-    aux : lista;
-    n : integer;
-begin
-    aux := l;
-    Write('ingresar valor a aumentar:   '); ReadLn(n);
-    while(aux <> Nil) do begin
-        aux^.num := aux^.num + n;
-        aux := aux^.sig
-    end;
+    aux^.sig := nil;
+    if (L = nil) then
+		L:= aux
+	else
+		ult^.sig:= aux;
+	ult:= aux;
 end;
 procedure imprimirLista(l : lista);
 begin
@@ -33,38 +25,70 @@ begin
   l := l^.sig;
   end;
 end;
-//Punto A.
+//PUNTO A
 function EstaOrdenada(l : lista) : boolean;
 var
     aux : lista;
 begin
-    EstaOrdenada := true;
-    aux := l^.sig;
-    while(aux <> Nil)  do begin
-        if(l^.num > aux^.num) then
-            EstaOrdenada := false;
-        l := l^.sig;
-        aux := aux^.sig;
+	EstaOrdenada:= true;
+	aux := l^.sig;
+    while(aux <> Nil)do begin
+		if ( l^.num > aux^.num) then
+			EstaOrdenada:= false;
+		l:= l^.sig;
+		aux:= aux^.sig;  
     end;
 end;
+//PUNTO B
+procedure eliminar (var l:lista; n:integer);
+	var
+		actual,ant: lista;
+	begin
+		actual:= l;
+		while (actual <> nil) and (actual^.num <> n) do begin
+			ant:= actual;
+			actual:= actual^.sig;
+		end;
+		if (actual <> nil) then begin
+			if(actual = l) then
+				l:= l^.sig
+			else
+				ant^.sig:= actual^.sig;
+		end;
+		dispose(actual);
+	end;
+//PUNTO C
+procedure sublista (var l,aux:lista; A,B: integer);
+	var
+		nue: lista;
+	begin
+		while (l <> nil) do begin
+			if (l^.num > A) and (l^.num < B) then begin
+				new(nue);
+				nue^.num:= l^.num;
+				nue^.sig:= l;
+				aux:= nue;
+			end;
+			l:= l^.sig;
+		end;	
+	end;
+	
+
 var
-    pri : lista;
+    pri,ult : lista;
     valor : integer;
 begin
     pri := nil;
-    writeln('‘Ingrese un numero’');
+    writeln('Ingrese un numero: ');
     readln(valor);
 while (valor <> 0) do begin
-    armarNodo(pri, valor);
-    writeln('‘Ingrese un numero’');
+    armarNodo(pri, ult, valor);
+    writeln('Ingrese un numero: ');
     readln(valor);
 end;
-    //imprimirLista(pri);
-    //aumentarLista(pri);
-    imprimirLista(pri);
-    WriteLn(EstaOrdenada(pri));
+    WriteLn('¿Está ordenada?	', EstaOrdenada(pri));
+	imprimirLista(ult);
 end.
-
 {9. Utilizando el programa del ejercicio 1, realizar los siguientes módulos:
 a. EstáOrdenada: recibe la lista como parámetro y retorna true si la misma se encuentra ordenada, o
 false en caso contrario.
@@ -75,4 +99,5 @@ con todos los elementos de la lista L mayores que A y menores que B.
 d. Modifique el módulo Sublista del inciso anterior, suponiendo que la lista L se encuentra ordenada
 de manera ascendente.
 e. Modifique el módulo Sublista del inciso anterior, suponiendo que la lista L se encuentra ordenada
-de manera descendente.}
+de manera descendente.
+}

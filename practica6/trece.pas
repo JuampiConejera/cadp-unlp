@@ -62,9 +62,8 @@ begin
     maxDos := -1;
     inicializarVector(vr);
     for i := 1 to totalUsuarios do begin
-        if(v[i].revista = 'economica') then begin
+        if(v[i].revista = 'economica') then
             insertarOrdenado(l,v[i]);
-        end;
         vr[v[i].rol] := vr[v[i].rol] + 1;
         if(v[i].ultimoAcceso > maxDos) then begin
             maxDos := v[i].ultimoAcceso;
@@ -75,7 +74,6 @@ begin
             emailDos := emailUno;
             maxUno := v[i].ultimoAcceso;
             emailUno := v[i].email;
-        end;
         end;
     end;
     for j := 1 to 4 do //punto B.

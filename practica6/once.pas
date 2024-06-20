@@ -43,13 +43,10 @@ end;
 procedure cargarAlumnos(var l : listaAlumnos);
 var
     a : alumno; 
-    i : integer;
 begin
-    i := 0;
     leerAlumno(a);
     while(a.legajo <> 0) do begin
         insertarOrdenado(l,a);
-        i := i + 1;
         leerAlumno(a);
     end;
 end;
